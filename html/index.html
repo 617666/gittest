@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扫雷游戏</title>
+    <link rel="stylesheet" href="../css/index.css">
+</head>
+<body>
+    <!-- 游戏最外层容器 -->
+    <div class="container"> 
+         <!-- 游戏标题 -->
+        <h1>扫雷
+            <button class="tiaoshi">调试</button>
+        </h1>
+        
+        <!-- 调试 -->
+    <div >
+        
+    </div>
+        <!-- 游戏难度 -->
+        <div class="level">
+            <button class="active">初级</button>
+            <button>中级</button>
+            <button>高级</button>   
+        </div>
+        <!-- 游戏信息 -->
+        <div>
+            <div class="info">总雷数：<span class="mineNum">10</span></div>
+            <div class="info">插旗数：<span class="flagNum">0</span></div>
+        </div>
+        <!-- 扫雷区域，通过js动态生成 -->
+        <div class="mineArea"></div>
+    </div>
+    <script src="../js/tool.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/index.js"></script>
+</body>
+</html>

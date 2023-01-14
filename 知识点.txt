@@ -1,0 +1,25 @@
+html
+（1）!+Tap可以快速生成html结构
+（2）html标签+Tap 可以自动生成完整的html标签
+（3）总雷数：<span class="mineNum">10</span>？
+
+
+css
+（1）border-box：width 和 height 属性包括内容，内边距padding和边框，但不包括外边距margin。
+（2）class要.，h1不用
+ (3) . > 什么时候用
+js
+（1）$,$$ 作者写的获取dom元素的函数，vs不报错，浏览器报错，改函数名字解决
+（2）打init（）时，总是自动补全 ？？
+（3）打乱数组
+（4）table tr td
+（5）mineArea.onmousedown = function(e){} e是哪来的 onmousedown吗
+（6）数组.flat()牛
+（7）flatTableData.filter(item => item.index == index)[0]
+（8）onmousedown、onmouseup、onclick(左键)、oncontextmenu(右键)
+（9）onclick与addEventlistner区别
+
+新增功能：
+1.调试功能，使雷全部显现---------√
+2.保证玩家第一个不会是雷
+3.点击扫雷标题 5 次弹出一个对话框，选择关闭和打开调试
