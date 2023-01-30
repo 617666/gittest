@@ -317,18 +317,17 @@ function bindEvent(){
     }
     
    find(".title").onclick = function(e){
-    // let clickCount  =0; // 点击次数
     let timeFlag = true; // 是否添加计时
     clickCount += 1;
     if (clickCount >= 5) {
         // 选择是否调试
-        console.log("hengg");
         var r = confirm("调试状态！");
         if(r){
-
-        }
-        else{
-            
+                for(var i = 0;i < curLevel.mineNum;i++){
+                    if(!find(".mine").classList.contains("tiaoshi")){ 
+                        finds(".mine")[i].style.opacity = '0.5';
+                    }      
+            }
         }
       } 
      if (timeFlag) { // 多次点击只触发一次
