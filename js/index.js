@@ -11,7 +11,7 @@ var isAllRight = true;
 var btns = finds(".level>button");
 var flagNum =   find(".flagNum");  //插旗数量的DOM元素
 var mineNumber = find(".mineNum");
-
+var clickCount = 0;
 
 /**
  * 生成地雷
@@ -41,7 +41,8 @@ function clearScene(){
 /**
  * 游戏初始化
  */
-function init(){    
+function init(){   
+    clearScene();
     mineArray = initMine();   //1.随机生成对应数量的雷   console.log(mineArray);
     var table = document.createElement('table')  //2.生成所选配置的表格
     var index = 0;  //初始化格子的下标
@@ -289,7 +290,7 @@ function bindEvent(){
     mineArea.oncontextmenu = function(e){  //阻止默认的鼠标右键行为   
         e.preventDefault();  
     }
-
+    
     find(".level").onclick = function(e){  //游戏难度选择
         for(var i =0; i<btns.length;i++){
             btns[i].classList.remove("active");
@@ -315,22 +316,29 @@ function bindEvent(){
         init();
     }
     
-    find(".tiaoshi").onclick = function(e){
-        // console.log(mineNumber);  //不行
-        // if(!mineArray.classList.contains("tiaoshi")){
-        //     mineArray.classList.add("tiaoshi");
-        // }
-        // else{
-        //     mineArray.classList.remove("tiaoshi");
-        // }
-        for(var i = 0;i < curLevel.mineNum;i++){
-            if(!find(".mine").classList.contains("tiaoshi")){ 
-                finds(".mine")[i].style.opacity = '0.5';
-            }
-           
-                
+   find(".title").onclick = function(e){
+    // let clickCount  =0; // 点击次数
+    let timeFlag = true; // 是否添加计时
+    clickCount += 1;
+    if (clickCount >= 5) {
+        // 选择是否调试
+        console.log("hengg");
+        var r = confirm("调试状态！");
+        if(r){
+
         }
-    }
+        else{
+            
+        }
+      } 
+     if (timeFlag) { // 多次点击只触发一次
+        timeFlag = false;
+        setTimeout(() => {
+          clickCount = 0;
+          timeFlag = true;
+        }, 2000);  //2000是5次总的
+      } 
+   }
 }
 
 /**

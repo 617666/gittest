@@ -6,18 +6,19 @@
 }
 
 /* 游戏最外层容器 */
-
-/* 游戏标题 */
-h1{
+.center{
     text-align: center;
-    font-size: 46;
+}
+/* 游戏标题 */
+.title{
+   
+    font-size: 30px;  
     font-weight: 100;
     margin: 30px auto 20px auto;
-}
-/* 调试 */
-.tiaoshi{
     cursor: pointer;
+    border-style: none;
 }
+
 /* 游戏难度 */
 .level{
     text-align: center;

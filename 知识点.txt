@@ -18,8 +18,11 @@ js
 （7）flatTableData.filter(item => item.index == index)[0]
 （8）onmousedown、onmouseup、onclick(左键)、oncontextmenu(右键)
 （9）onclick与addEventlistner区别
+ (10) 字体大小，带单位有时候有用有时候没用
+ (11)button居中，必须加个div吗
 
 新增功能：
 1.调试功能，使雷全部显现---------√
 2.保证玩家第一个不会是雷
-3.点击扫雷标题 5 次弹出一个对话框，选择关闭和打开调试
+3.点击扫雷标题 5 次弹出一个对话框，选择关闭和打开调试 
+    "扫雷”必须改成button吗
