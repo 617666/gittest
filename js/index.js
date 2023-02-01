@@ -12,7 +12,7 @@ var btns = finds(".level>button");
 var flagNum =   find(".flagNum");  //插旗数量的DOM元素
 var mineNumber = find(".mineNum");
 var clickCount = 0;
-
+var ifFirst =true;
 /**
  * 生成地雷
  * @returns 返回地雷数组
@@ -24,6 +24,7 @@ function initMine(){
     }
     arr.sort(() => 0.5-Math.random()); //打乱数组
     return arr.slice(0,curLevel.mineNum);  //保留对应雷数量的数组
+    
 }
 
 /**
@@ -43,7 +44,7 @@ function clearScene(){
  */
 function init(){   
     clearScene();
-    mineArray = initMine();   //1.随机生成对应数量的雷   console.log(mineArray);
+   // mineArray = initMine();   //1.随机生成对应数量的雷   console.log(mineArray);
     var table = document.createElement('table')  //2.生成所选配置的表格
     var index = 0;  //初始化格子的下标
     for(var i = 0; i<curLevel.row;i++){
@@ -63,10 +64,10 @@ function init(){
             div.dataset.id = index;  //为div添加下标
             div.classList.add("canFlag");  //标记可以插旗
             index++;
-            if(mineArray.includes(tableData[i][j].index)){//判断雷的格子
-                tableData[i][j].type = "mine";
-                div.classList.add("mine");
-            }
+            // if(mineArray.includes(tableData[i][j].index)){//判断雷的格子
+            //     tableData[i][j].type = "mine";
+            //     div.classList.add("mine");
+            // }
             tr.appendChild(td);
             td.appendChild(div);
         }
@@ -85,6 +86,25 @@ function init(){
         }
     }
 }
+
+/**
+ * 雷初始化
+ */
+function mine(){
+    ifFirst = true;
+    mineArray = initMine();   //1.随机生成对应数量的雷   console.log(mineArray);
+    console.log(mineArray);
+    for(var i = 0; i<curLevel.row;i++){
+        for(var j = 0;j<curLevel.col;j++){
+            if(mineArray.includes(tableData[i][j].index)){//判断雷的格子
+                tableData[i][j].type = "mine";
+                getDOM(tableData[i][j]).classList.add("mine");
+            }
+        }
+    }
+    
+}
+
 
 /**
  * 游戏结束 显示答案
@@ -206,14 +226,42 @@ function getAround(cell){  //console.log(cell);console.log(cell.parentNode);
  * @param {*} cell 用户点击的 DOM 元素 
  */
 function searchArea(cell){
-    if(cell.classList.contains("mine") ){   //1.是雷 游戏结束
-        cell.classList.add("error");
-        gameOver(false);
-        showAnswer();
-        return;
+    var ifmine = cell.classList.contains("mine");
+    if(ifFirst && cell.classList.contains("mine")){  //第一次点击到了雷
+        for(var i=0; i<curLevel.row;i++){
+            for(var j = 0; j<curLevel.col;j++){
+                //console.log(tableData[i][j].type);
+                if(tableData[i][j].type === "mine"){  //是雷
+                    tableData[i][j].type = "number";
+                    getDOM(tableData[i][j]).classList.remove("mine");
+                }      
+                
+            }
+        }
+        // for(var i = 0;i < curLevel.mineNum;i++){  //原来雷区删除
+        //     console.log(finds(".mine")[0]); //是<div>
+        //     finds(".mine")[0].type = "number"; // type不能忘了改！！！ 这样改好像没改对 
+        //     console.log(finds(".mine")[0].type);
+        //     finds(".mine")[0].classList.remove("mine");
+        // }
+        mine();  //重新生成雷
     }
-    getAround(cell);  //2.不是雷 判断周围雷
-    
+    if(ifFirst && !ifmine){  //第一次点击没点到雷  //Z这里好烦啊 
+        getAround(cell);
+    }
+    //不是第一次了
+    if(!ifFirst){  // 不是第一次
+        if(cell.classList.contains("mine") ){   //1.是雷 游戏结束
+            cell.classList.add("error");
+            gameOver(false);
+            showAnswer();
+            return;
+        }
+        
+        getAround(cell);  //2.不是雷 判断周围雷
+        
+    }
+    ifFirst = false; 
 }
 
 /**
@@ -276,7 +324,6 @@ function flag(cell){
  * 绑定事件
  */
 function bindEvent(){
-    
     mineArea.onmousedown = function(e){  //鼠标点击事件   console.log(e.button);
         if(e.button == 0){
                 searchArea(e.target);  //左键 区域搜索
@@ -316,7 +363,7 @@ function bindEvent(){
         init();
     }
     
-   find(".title").onclick = function(e){
+   find(".title").onclick = function x(e){  //游戏调试选择
     let timeFlag = true; // 是否添加计时
     clickCount += 1;
     if (clickCount >= 5) {
@@ -335,9 +382,30 @@ function bindEvent(){
         setTimeout(() => {
           clickCount = 0;
           timeFlag = true;
+      
         }, 2000);  //2000是5次总的
       } 
    }
+
+//    find(".title").onclick = function x(e){
+//     if(clickCount < 5){
+//         clickCount += 1;
+//         setTimeout(x(e), 2000);  //2000是5次总的
+//         } 
+//     }
+    
+//     if (clickCount >= 5) {
+//         // 选择是否调试
+//         var r = confirm("调试状态！");
+//         if(r){
+//                 for(var i = 0;i < curLevel.mineNum;i++){
+//                     if(!find(".mine").classList.contains("tiaoshi")){ 
+//                         finds(".mine")[i].style.opacity = '0.5';
+//                     }      
+//             }
+//         }
+//       } 
+    
 }
 
 /**
@@ -345,6 +413,7 @@ function bindEvent(){
  */
 function main(){  
     init();   // 1.初始化游戏  
+    mine();
     bindEvent();   // 2.绑定事件
     
 }
