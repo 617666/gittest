@@ -13,6 +13,8 @@ var flagNum =   find(".flagNum");  //插旗数量的DOM元素
 var mineNumber = find(".mineNum");
 var clickCount = 0;
 var ifFirst =true;
+var gezi;  //没点的格子
+var s_mine;  //剩的雷
 /**
  * 生成地雷
  * @returns 返回地雷数组
@@ -36,6 +38,9 @@ function clearScene(){
     flagNum.innerHTML = 0;
     mineNumber.innerHTML = curLevel.mineNum;
     ifFirst = true;
+    gezi = curLevel.col * curLevel.row;
+    s_gezi = 0;
+    s_mine = curLevel.mineNum;
 }
 
 
@@ -124,7 +129,10 @@ function showAnswer(){
         }
     }
     if(!isAllRight){
-        gameOver(false);
+
+        setTimeout(() => {
+            gameOver(false)
+        }, 1000);
     }
     mineArea.onmousedown = null;
 }
@@ -194,8 +202,7 @@ function getAround(cell){  //console.log(cell);console.log(cell.parentNode);
         if(!tableItem){
             return;
         }
-        tableItem.checked = true;
-    
+        tableItem.checked = true;   
         var mineNum = findMineNum(tableItem);  //周围雷的数量
         if(!mineNum){  //没有雷 继续搜索
             var {rowTop,rowBottom,colLeft,cloRight} = getBound(tableItem);
@@ -204,17 +211,16 @@ function getAround(cell){  //console.log(cell);console.log(cell.parentNode);
                     if(!tableData[i][j].checked){
                         //var dom = getDOM(tableData[i][j]);  console.log(dom);
                         getAround(getDOM(tableData[i][j]));
-                        
-                         
-                    }       
-                    
+                    }                    
                 }
             }
+            gezi--;
             var cl=["zero","one","two","three","four","five","six","seven","eight",];
             cell.classList.add(cl[mineNum]);
         }
         else{
             var cl=["zero","one","two","three","four","five","six","seven","eight",];
+            gezi--;
             cell.classList.add(cl[mineNum]);
             cell.innerHTML = mineNum;
         }
@@ -249,32 +255,34 @@ function searchArea(cell){
     if(ifFirst && !ifmine){  //第一次点击没点到雷  //Z这里好烦啊 
         getAround(cell);
     }
-    //不是第一次了
     if(!ifFirst){  // 不是第一次
         if(cell.classList.contains("mine") ){   //1.是雷 游戏结束
             cell.classList.add("error");
-            gameOver(false);
             showAnswer();
+            setTimeout(() => {
+                gameOver(false)
+            }, 1000);           
             return;
-        }
-        
+        }        
         getAround(cell);  //2.不是雷 判断周围雷
-        
     }
     ifFirst = false; 
+    if(gezi === s_mine){
+        showAnswer();
+        setTimeout(() => {
+            gameOver(true)
+        }, 1000);
+    }
 }
 
 /**
- * 判断用户的插旗是否全部正确
+ * 判断用户的插旗是否全部正确————剩的格子数和剩的雷数相等
  */
 function isWin(){
-    console.log(flagArray);
-    for(var i = 0;i<flagArray.length;i++){
-        if(!flagArray[i].classList.contains("mine")){
-            return false;
-        }
-    }
-    return true;
+    if(s_mine === s_gezi)
+        return true;
+    else return false;
+   // return true;
 }
 
 /**
@@ -282,6 +290,7 @@ function isWin(){
  * @param {*} isWin 布尔值
  */
 function gameOver(isWin){
+
     var mess = "";
     if(isWin){
         mess = "游戏胜利，你找出了所有的雷"; 
@@ -296,28 +305,50 @@ function gameOver(isWin){
  * 插旗
  * @param {*} cell 用户点击的 DOM 元素 
  */
-function flag(cell){
-    if(cell.classList.contains("canFlag")){  //可以插旗
-        if(!flagArray.includes(cell)){   //之前插过了
-            flagArray.push(cell);  //取消插旗
-            cell.classList.add("flag");
-            if(flagArray.length === curLevel.mineNum){  //旗子插完了
-                // if(isWin()){  //判断是否胜利
-                //     gameOver(isWin());  //
-                // }
-
-                gameOver(isWin());
-                showAnswer();
+function flag(cell){  //确定这里不要优化一下吗你
+    if(cell.classList.contains("canFlag")){  //可以插旗的格子
+        if(flagArray.length < curLevel.mineNum){
+            if(!flagArray.includes(cell)){   //之前没插过
+                flagArray.push(cell);  //插旗
+                cell.classList.add("flag");
+                if(cell.classList.contains("mine")){
+                    s_mine--;
+                }
+                gezi--;
+            }
+            else{
+                var index = flagArray.indexOf(cell);
+                flagArray.splice(index,1);
+                cell.classList.remove("flag");
+                if(cell.classList.contains("mine")){
+                    s_mine++;                   
+                }
+                gezi++;
             }
         }
-        else{
-            var index = flagArray.indexOf(cell);
-            flagArray.splice(index,1);
-            cell.classList.remove("flag");
+        if(flagArray.length === curLevel.mineNum){
+            var result = true;
+            for(var i= 0;i<flagArray.length;i++){
+                if(flagArray[i].classList.contains("mine"))
+                     result = true;
+                else result = fasle;
+            }
+            gameOver(result);
         }
-      
+        if(flagArray.length > curLevel.mineNum){  //旗子插完了，只能取消插旗
+            if(flagArray.includes(cell)){   //之前插过 取消插旗
+                var index = flagArray.indexOf(cell);
+                flagArray.splice(index,1);
+                cell.classList.remove("flag");
+                if(cell.classList.contains("mine")){
+                    s_mine++;
+                }
+                gezi++;
+            }
+        }     
         flagNum.innerHTML = flagArray.length;
     }
+    
 }
 
 /**
@@ -361,6 +392,7 @@ function bindEvent(){
         }
 
         init();
+        mine();
     }
     
    find(".title").onclick = function x(e){  //游戏调试选择
@@ -377,12 +409,12 @@ function bindEvent(){
             }
         }
       } 
-     if (timeFlag) { // 多次点击只触发一次
+    if (timeFlag) { // 多次点击只触发一次
         timeFlag = false;
         setTimeout(() => {
-          clickCount = 0;
-          timeFlag = true;
-      
+        console.log(clickCount);
+        clickCount = 0;
+        timeFlag = true;      
         }, 2000);  //2000是5次总的
       } 
    }

@@ -57,7 +57,7 @@ table{
 table td{
     width: 24px;
     height: 24px;
-    background-color: #ccc;
+    background-color: rgb(158, 156, 156);
     border:2px solid;
     border-color: #fff #a1a1a1 #a1a1a1 #fff;
     text-align: center;
