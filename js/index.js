@@ -15,6 +15,7 @@ var clickCount = 0;
 var ifFirst =true;
 var gezi;  //没点的格子
 var s_mine;  //剩的雷
+var iftiaoshi;
 /**
  * 生成地雷
  * @returns 返回地雷数组
@@ -107,6 +108,13 @@ function mine(){
             }
         }
     }
+    if(iftiaoshi){
+        for(var i = 0;i < curLevel.mineNum;i++){
+            if(!find(".mine").classList.contains("tiaoshi")){ 
+                finds(".mine")[i].style.opacity = '0.5';
+            }      
+    }
+}
     
 }
 
@@ -306,6 +314,7 @@ function gameOver(isWin){
  * @param {*} cell 用户点击的 DOM 元素 
  */
 function flag(cell){  //确定这里不要优化一下吗你
+    
     if(cell.classList.contains("canFlag")){  //可以插旗的格子
         if(flagArray.length < curLevel.mineNum){
             if(!flagArray.includes(cell)){   //之前没插过
@@ -333,7 +342,12 @@ function flag(cell){  //确定这里不要优化一下吗你
                      result = true;
                 else result = fasle;
             }
-            gameOver(result);
+            
+            setTimeout(() => {
+                gameOver(result)
+            }, 1000);
+            if(result)
+                showAnswer();
         }
         if(flagArray.length > curLevel.mineNum){  //旗子插完了，只能取消插旗
             if(flagArray.includes(cell)){   //之前插过 取消插旗
@@ -360,6 +374,7 @@ function bindEvent(){
                 searchArea(e.target);  //左键 区域搜索
         }
         if(e.button == 2){
+            ifFirst = false;
             flag(e.target)  //右键 插旗
         }
 
@@ -402,11 +417,13 @@ function bindEvent(){
         // 选择是否调试
         var r = confirm("调试状态！");
         if(r){
-                for(var i = 0;i < curLevel.mineNum;i++){
-                    if(!find(".mine").classList.contains("tiaoshi")){ 
-                        finds(".mine")[i].style.opacity = '0.5';
-                    }      
+            iftiaoshi = true;
+            for(var i = 0;i < curLevel.mineNum;i++){
+                if(!find(".mine").classList.contains("tiaoshi")){ 
+                    finds(".mine")[i].style.opacity = '0.5';                    }      
             }
+            //添加按钮
+            find(".zuobi").style.opacity = 1;
         }
       } 
     if (timeFlag) { // 多次点击只触发一次
@@ -419,25 +436,15 @@ function bindEvent(){
       } 
    }
 
-//    find(".title").onclick = function x(e){
-//     if(clickCount < 5){
-//         clickCount += 1;
-//         setTimeout(x(e), 2000);  //2000是5次总的
-//         } 
-//     }
-    
-//     if (clickCount >= 5) {
-//         // 选择是否调试
-//         var r = confirm("调试状态！");
-//         if(r){
-//                 for(var i = 0;i < curLevel.mineNum;i++){
-//                     if(!find(".mine").classList.contains("tiaoshi")){ 
-//                         finds(".mine")[i].style.opacity = '0.5';
-//                     }      
-//             }
-//         }
-//       } 
-    
+   find(".zuobi").onclick = function(e){
+    iftiaoshi = false;
+    for(var i = 0;i < curLevel.mineNum;i++){
+        if(!find(".mine").classList.remove("tiaoshi")){ 
+            finds(".mine")[i].style.opacity = '0';                    }      
+    }
+    //添加按钮
+    find(".zuobi").style.opacity = 0;
+   }
 }
 
 /**
