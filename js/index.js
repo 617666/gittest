@@ -391,9 +391,18 @@ addLongtabListener(mineArea,a)
  */
 function bindEvent(){
     mineArea.onmousedown = function(e){  //鼠标点击事件   console.log(e.button);
-        if(e.button == 0){
+        if(!flagArray.includes(e.target) && e.button == 0){
                 searchArea(e.target);  //左键 区域搜索
         }
+        if(flagArray.includes(e.target) && e.button == 0){
+            var index = flagArray.indexOf(e.target);
+            flagArray.splice(index,1);
+            e.target.classList.remove("flag");
+            if(e.target.classList.contains("mine")){
+                s_mine++;
+            }
+            gezi++;
+    }
         if(e.button == 2){
             ifFirst = false;
             flag(e.target)  //右键 插旗
