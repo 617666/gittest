@@ -202,11 +202,11 @@ function getDOM(obj){
  * 周围九宫格
  */
 function getAround(cell){  //console.log(cell);console.log(cell.parentNode);
-   
-    if(!cell.classList.contains("flag")){  //没被插旗 才进行以下操作
+    var tableItem = getTableItem(cell);  //1.该 DOM 元素在tableData里面所对应的元素  console.log(tableItem);
+    if(!tableItem.checked && !cell.classList.contains("flag")){  //没被插旗 才进行以下操作
         cell.parentNode.style.boader = "none";  
         cell.classList.remove("canFlag");
-        var tableItem = getTableItem(cell);  //1.该 DOM 元素在tableData里面所对应的元素  console.log(tableItem);
+        // var tableItem = getTableItem(cell);  //1.该 DOM 元素在tableData里面所对应的元素  console.log(tableItem);
         if(!tableItem){
             return;
         }
@@ -316,50 +316,46 @@ function gameOver(isWin){
 function flag(cell){  //确定这里不要优化一下吗你
     
     if(cell.classList.contains("canFlag")){  //可以插旗的格子
-        if(flagArray.length < curLevel.mineNum){
-            if(!flagArray.includes(cell)){   //之前没插过
-                flagArray.push(cell);  //插旗
-                cell.classList.add("flag");
-                if(cell.classList.contains("mine")){
-                    s_mine--;
-                }
-                gezi--;
+        if(flagArray.includes(cell)){   //取消插旗
+            var index = flagArray.indexOf(cell);
+            flagArray.splice(index,1);
+            cell.classList.remove("flag");
+            if(cell.classList.contains("mine")){
+                s_mine++;
             }
-            else{
-                var index = flagArray.indexOf(cell);
-                flagArray.splice(index,1);
-                cell.classList.remove("flag");
-                if(cell.classList.contains("mine")){
-                    s_mine++;                   
+            gezi++;
+        }
+        else{  //准备插旗
+            if(flagArray.length < curLevel.mineNum){
+                if(!flagArray.includes(cell)){   //之前没插过
+                    flagArray.push(cell);  //插旗
+                    cell.classList.add("flag");
+                    if(cell.classList.contains("mine")){
+                        s_mine--;
+                    }
+                    gezi--;
                 }
-                gezi++;
+            }
+            if(flagArray.length === curLevel.mineNum){
+                var result = true;
+                for(var i= 0;i<flagArray.length;i++){
+                    if(flagArray[i].classList.contains("mine"))
+                         result = true;
+                    else{
+                        result = false;
+                        break;
+                    } 
+                }
+                if(result){
+                    setTimeout(() => {
+                        gameOver(result)
+                    }, 1000);
+                    if(result)
+                        showAnswer();
+                } 
             }
         }
-        if(flagArray.length === curLevel.mineNum){
-            var result = true;
-            for(var i= 0;i<flagArray.length;i++){
-                if(flagArray[i].classList.contains("mine"))
-                     result = true;
-                else result = fasle;
-            }
-            
-            setTimeout(() => {
-                gameOver(result)
-            }, 1000);
-            if(result)
-                showAnswer();
-        }
-        if(flagArray.length > curLevel.mineNum){  //旗子插完了，只能取消插旗
-            if(flagArray.includes(cell)){   //之前插过 取消插旗
-                var index = flagArray.indexOf(cell);
-                flagArray.splice(index,1);
-                cell.classList.remove("flag");
-                if(cell.classList.contains("mine")){
-                    s_mine++;
-                }
-                gezi++;
-            }
-        }     
+        
         flagNum.innerHTML = flagArray.length;
     }
     
