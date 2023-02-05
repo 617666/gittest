@@ -313,8 +313,7 @@ function gameOver(isWin){
  * 插旗
  * @param {*} cell 用户点击的 DOM 元素 
  */
-function flag(cell){  //确定这里不要优化一下吗你
-    
+function flag(cell){  //确定这里不要优化一下吗你 
     if(cell.classList.contains("canFlag")){  //可以插旗的格子
         if(flagArray.includes(cell)){   //取消插旗
             var index = flagArray.indexOf(cell);
@@ -361,6 +360,32 @@ function flag(cell){  //确定这里不要优化一下吗你
     
 }
 
+
+function a(cell){ 
+    console.log("longtab");
+    ifFirst = false;
+    flag(cell)  //右键 插旗)
+}
+
+function addLongtabListener(mineArea,callback){
+    let timer=0   // 初始化timer
+    
+    mineArea.ontouchstart=(e)=>{
+        timer=0   // 重置timer
+        timer=setTimeout(()=>{callback(e.target);timer=0},380)  // 超时器能成功执行，说明是长按
+    }
+
+    mineArea.ontouchmove=()=>{
+        clearTimeout(timer)    // 如果来到这里，说明是滑动
+        timer=0 
+    }
+
+    mineArea.ontouchend=()=>{   // 到这里如果timer有值，说明此触摸时间不足380ms，是点击
+       if(timer){clearTimeout(timer)}
+    }
+}
+
+addLongtabListener(mineArea,a)
 /**
  * 绑定事件
  */
@@ -373,9 +398,7 @@ function bindEvent(){
             ifFirst = false;
             flag(e.target)  //右键 插旗
         }
-
     }
-
     mineArea.oncontextmenu = function(e){  //阻止默认的鼠标右键行为   
         e.preventDefault();  
     }
@@ -416,7 +439,7 @@ function bindEvent(){
             iftiaoshi = true;
             for(var i = 0;i < curLevel.mineNum;i++){
                 if(!find(".mine").classList.contains("tiaoshi")){ 
-                    finds(".mine")[i].style.opacity = '0.5';                    }      
+                    finds(".mine")[i].style.opacity = '0.5';}      
             }
             //添加按钮
             find(".zuobi").style.opacity = 1;
