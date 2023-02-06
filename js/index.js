@@ -109,10 +109,8 @@ function mine(){
         }
     }
     if(iftiaoshi){
-        for(var i = 0;i < curLevel.mineNum;i++){
-            if(!find(".mine").classList.contains("tiaoshi")){ 
-                finds(".mine")[i].style.opacity = '0.5';
-            }      
+        for(var i = 0;i < curLevel.mineNum;i++){  
+            finds(".mine")[i].style.opacity = '0.5';
     }
 }
     
@@ -133,15 +131,15 @@ function showAnswer(){
             flagArray[i].classList.add("right");
         }else{
             flagArray[i].classList.add("error");
-            isAllRight = false;
+            //isAllRight = false;
         }
     }
-    if(!isAllRight){
-
-        setTimeout(() => {
-            gameOver(false)
-        }, 1000);
-    }
+    // if(!isAllRight){
+    //     setTimeout(() => {
+    //         gameOver(false)
+    //     }, 1000);
+    //     return;
+    // }
     mineArea.onmousedown = null;
 }
 
@@ -280,6 +278,7 @@ function searchArea(cell){
         setTimeout(() => {
             gameOver(true)
         }, 1000);
+        return;
     }
 }
 
@@ -313,7 +312,9 @@ function gameOver(isWin){
  * 插旗
  * @param {*} cell 用户点击的 DOM 元素 
  */
-function flag(cell){  //确定这里不要优化一下吗你 
+function flag(cell){ 
+    console.log(flagArray);
+    console.log(cell);
     if(cell.classList.contains("canFlag")){  //可以插旗的格子
         if(flagArray.includes(cell)){   //取消插旗
             var index = flagArray.indexOf(cell);
@@ -335,7 +336,7 @@ function flag(cell){  //确定这里不要优化一下吗你
                     gezi--;
                 }
             }
-            if(flagArray.length === curLevel.mineNum){
+            if(flagArray.length === curLevel.mineNum  && gezi == 0){
                 var result = true;
                 for(var i= 0;i<flagArray.length;i++){
                     if(flagArray[i].classList.contains("mine"))
@@ -351,6 +352,7 @@ function flag(cell){  //确定这里不要优化一下吗你
                     }, 1000);
                     if(result)
                         showAnswer();
+                    
                 } 
             }
         }
@@ -394,7 +396,7 @@ function bindEvent(){
         if(!flagArray.includes(e.target) && e.button == 0){
                 searchArea(e.target);  //左键 区域搜索
         }
-        if(flagArray.includes(e.target) && e.button == 0){
+        if(flagArray.includes(e.target) && e.button == 0){  //左键取消插旗
             var index = flagArray.indexOf(e.target);
             flagArray.splice(index,1);
             e.target.classList.remove("flag");
@@ -446,11 +448,10 @@ function bindEvent(){
         var r = confirm("调试状态！");
         if(r){
             iftiaoshi = true;
-            for(var i = 0;i < curLevel.mineNum;i++){
-                if(!find(".mine").classList.contains("tiaoshi")){ 
-                    finds(".mine")[i].style.opacity = '0.5';}      
-            }
-            //添加按钮
+            for(var i = 0;i < curLevel.mineNum;i++){      
+                finds(".mine")[i].style.opacity = '0.5';
+             }    
+            //隐藏按钮
             find(".zuobi").style.opacity = 1;
         }
       } 
@@ -466,11 +467,16 @@ function bindEvent(){
 
    find(".zuobi").onclick = function(e){
     iftiaoshi = false;
-    for(var i = 0;i < curLevel.mineNum;i++){
-        if(!find(".mine").classList.remove("tiaoshi")){ 
-            finds(".mine")[i].style.opacity = '0';                    }      
+    for(var i = 0;i < curLevel.mineNum;i++){   
+        var cell = finds(".mine")[i]; 
+        cell.style.opacity = '0';
+        //cell.classList.add("tsmine");
+        if(flagArray.includes(cell)){
+            cell.style.opacity = '1';
+            cell.classList.add("tsflag");
+       }
     }
-    //添加按钮
+    //按钮显现
     find(".zuobi").style.opacity = 0;
    }
 }

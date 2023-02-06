@@ -82,15 +82,20 @@ td>div.mine{
     opacity: 0;
 }
 
-td>div.mine.tiaoshi{
-    background: #ccc url("../images/mine.png") center/cover no-repeat;
-    opacity: 1;
-}
 td>div.flag{
     background: #ccc url("../images/flag.png") center/cover no-repeat;
     opacity:1; 
 }
 
+td>div.tsmine{
+    background: #ccc url("../images/mine.png") center/cover no-repeat;
+    opacity: 0;
+}
+
+td>div.tsflag{
+    background: #ccc url("../images/flag.png") center/cover no-repeat;
+    opacity:1; 
+}
 td>div.error{
     background-color: rgb(216,0,0);
 }
