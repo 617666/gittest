@@ -1,8 +1,3 @@
-/**
- * 游戏主要逻辑
- */
-
-
 var mineArray = null; //存储生成的地雷数组
 var mineArea = find(".mineArea");  //雷区的容器
 var tableData = [];  //存储格子额外信息
@@ -110,7 +105,8 @@ function mine(){
     }
     if(iftiaoshi){
         for(var i = 0;i < curLevel.mineNum;i++){  
-            finds(".mine")[i].style.opacity = '0.5';
+           // finds(".mine")[i].style.opacity = '0.5';
+           finds(".mine")[i].classList.add("tsmine");
     }
 }
     
@@ -134,12 +130,6 @@ function showAnswer(){
             //isAllRight = false;
         }
     }
-    // if(!isAllRight){
-    //     setTimeout(() => {
-    //         gameOver(false)
-    //     }, 1000);
-    //     return;
-    // }
     mineArea.onmousedown = null;
 }
 
@@ -257,6 +247,7 @@ function searchArea(cell){
         //     finds(".mine")[0].classList.remove("mine");
         // }
         mine();  //重新生成雷
+        getAround(cell);
     }
     if(ifFirst && !ifmine){  //第一次点击没点到雷  //Z这里好烦啊 
         getAround(cell);
@@ -313,13 +304,12 @@ function gameOver(isWin){
  * @param {*} cell 用户点击的 DOM 元素 
  */
 function flag(cell){ 
-    console.log(flagArray);
-    console.log(cell);
     if(cell.classList.contains("canFlag")){  //可以插旗的格子
         if(flagArray.includes(cell)){   //取消插旗
             var index = flagArray.indexOf(cell);
-            flagArray.splice(index,1);
+            flagArray.splice(index,1);          
             cell.classList.remove("flag");
+            cell.classList.remove("tsflag");
             if(cell.classList.contains("mine")){
                 s_mine++;
             }
@@ -328,6 +318,9 @@ function flag(cell){
         else{  //准备插旗
             if(flagArray.length < curLevel.mineNum){
                 if(!flagArray.includes(cell)){   //之前没插过
+                    // if(cell.classList.contains("tsmine")){
+                    //     cell.classList.add("tsflag");
+                    // }
                     flagArray.push(cell);  //插旗
                     cell.classList.add("flag");
                     if(cell.classList.contains("mine")){
@@ -399,7 +392,9 @@ function bindEvent(){
         if(flagArray.includes(e.target) && e.button == 0){  //左键取消插旗
             var index = flagArray.indexOf(e.target);
             flagArray.splice(index,1);
+            console.log(e.target);        
             e.target.classList.remove("flag");
+            cell.classList.remove("tsflag");
             if(e.target.classList.contains("mine")){
                 s_mine++;
             }
@@ -438,6 +433,7 @@ function bindEvent(){
 
         init();
         mine();
+        bindEvent();  //没有，会有一些小bug；为什么呢
     }
     
    find(".title").onclick = function x(e){  //游戏调试选择
@@ -449,7 +445,7 @@ function bindEvent(){
         if(r){
             iftiaoshi = true;
             for(var i = 0;i < curLevel.mineNum;i++){      
-                finds(".mine")[i].style.opacity = '0.5';
+                finds(".mine")[i].classList.add("tsmine");
              }    
             //隐藏按钮
             find(".zuobi").style.opacity = 1;
@@ -458,7 +454,6 @@ function bindEvent(){
     if (timeFlag) { // 多次点击只触发一次
         timeFlag = false;
         setTimeout(() => {
-        console.log(clickCount);
         clickCount = 0;
         timeFlag = true;      
         }, 2000);  //2000是5次总的
@@ -469,12 +464,11 @@ function bindEvent(){
     iftiaoshi = false;
     for(var i = 0;i < curLevel.mineNum;i++){   
         var cell = finds(".mine")[i]; 
-        cell.style.opacity = '0';
-        //cell.classList.add("tsmine");
         if(flagArray.includes(cell)){
-            cell.style.opacity = '1';
             cell.classList.add("tsflag");
        }
+         cell.classList.remove("tsmine");
+         cell.classList.add("qxtsmine");
     }
     //按钮显现
     find(".zuobi").style.opacity = 0;
@@ -487,8 +481,7 @@ function bindEvent(){
 function main(){  
     init();   // 1.初始化游戏  
     mine();
-    bindEvent();   // 2.绑定事件
-    
+    bindEvent();   // 2.绑定事件    
 }
 
 main()

@@ -76,22 +76,26 @@ td>div{
     width: 100%;
     height: 100%;
 }
-
+/* 这里顺序注意下蛤 */
+td>div.qxtsmine{
+    background: #ccc url("../images/mine.png") center/cover no-repeat;
+    opacity: 0;
+}
 td>div.mine{
     background: #ccc url("../images/mine.png") center/cover no-repeat;
     opacity: 0;
+}
+
+
+td>div.tsmine{
+    background: #ccc url("../images/mine.png") center/cover no-repeat;
+    opacity: 0.5;
 }
 
 td>div.flag{
     background: #ccc url("../images/flag.png") center/cover no-repeat;
     opacity:1; 
 }
-
-td>div.tsmine{
-    background: #ccc url("../images/mine.png") center/cover no-repeat;
-    opacity: 0;
-}
-
 td>div.tsflag{
     background: #ccc url("../images/flag.png") center/cover no-repeat;
     opacity:1; 
@@ -116,6 +120,7 @@ td>div.one{
     border-color: #d9d9d9;
     background: #d9d9d9;
     color:#0332fe;
+    opacity:1;
 }
 td>div.two{
     width: 20px;
@@ -123,6 +128,7 @@ td>div.two{
     border-color: #d9d9d9;
     background: #d9d9d9;
     color:#019f02;
+    opacity:1;
 }
 td>div.three{
     width: 20px;
