@@ -58,6 +58,7 @@ table{
     background-color: #929196;
     margin:0 auto;
     border-spacing: 1px;
+    overflow:scroll
 }
 
 table td{
