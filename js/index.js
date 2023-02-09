@@ -231,11 +231,11 @@ function searchArea(cell){
     var ifmine = cell.classList.contains("mine");
     if(ifFirst && cell.classList.contains("mine")){  //第一次点击到了雷
         for(var i=0; i<curLevel.row;i++){
-            for(var j = 0; j<curLevel.col;j++){
-                //console.log(tableData[i][j].type);
-                if(tableData[i][j].type === "mine"){  //是雷
+            for(var j = 0; j<curLevel.col;j++){  //取消雷
+                if(tableData[i][j].type === "mine"){  
                     tableData[i][j].type = "number";
                     getDOM(tableData[i][j]).classList.remove("mine");
+                    getDOM(tableData[i][j]).classList.remove("tsmine");
                 }      
                 
             }
@@ -329,7 +329,7 @@ function flag(cell){
                     gezi--;
                 }
             }
-            if(flagArray.length === curLevel.mineNum  && gezi == 0){
+            if(flagArray.length === curLevel.mineNum - gezi){
                 var result = true;
                 for(var i= 0;i<flagArray.length;i++){
                     if(flagArray[i].classList.contains("mine"))
